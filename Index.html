@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Avanzado de Análisis Corporal - DEXA Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+    <!-- Aquí va el CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ai-styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DEXA Pro - Análisis Corporal Avanzado</h1>
+            <p class="subtitle">Sistema profesional de análisis antropométrico y composición corporal</p>
+        </div>
+ <div style="margin-top: 15px;">
+        <button onclick="resetearTodosLosDatos()" class="btn-reset" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+            🗑️ Resetear Todos los Datos
+        </button>
+        <span id="dataStatus" style="margin-left: 15px; font-size: 12px; color: #10b981;"></span>
+    </div>
+</div>
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('input')">Mediciones</div>
+            <div class="nav-tab" onclick="showTab('analysis')">Análisis</div>
+            <div class="nav-tab" onclick="showTab('proportions')">Proporciones</div>
+            <div class="nav-tab" onclick="showTab('nutrition')">Nutrición</div>
+            <div class="nav-tab" onclick="showTab('training')">Entrenamiento</div>
+            <div class="nav-tab" onclick="showTab('progress')">Progreso</div>
+            <div class="nav-tab" onclick="showTab('reports')">Informes</div>
+        </div>
+
+        <!-- TAB: MEDICIONES -->
+        <div id="input" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">👤</div>
+                    <h2 class="card-title">Datos del Cliente</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>Información Personal</h3>
+                        <div class="form-group">
+                            <label class="form-label">Nombre completo</label>
+                            <input type="text" id="nombre" class="form-input" placeholder="Juan Pérez">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Edad (años)</label>
+                                <input type="number" id="edad" class="form-input" min="15" max="80" value="26">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sexo</label>
+                                <select id="sexo" class="form-input">
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Fecha evaluación</label>
+                                <input type="date" id="fecha" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Experiencia entrenamiento</label>
+                                <select id="experiencia" class="form-input">
+                                    <option value="principiante">Principiante (< 1 año)</option>
+                                    <option value="intermedio">Intermedio (1-3 años)</option>
+                                    <option value="avanzado">Avanzado (3-5 años)</option>
+                                    <option value="experto">Experto (> 5 años)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Objetivo principal</label>
+                                <select id="objetivo" class="form-input">
+                                    <option value="hipertrofia">Hipertrofia muscular</option>
+                                    <option value="definicion">Definición corporal</option>
+                                    <option value="fuerza">Ganancia de fuerza</option>
+                                    <option value="recomposicion">Recomposición corporal</option>
+                                    <option value="salud">Salud general</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Medidas Básicas</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Peso (kg)</label>
+                                <input type="number" id="peso" class="form-input" step="0.1" value="80">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Estatura (cm)</label>
+                                <input type="number" id="estatura" class="form-input" step="0.1" value="180">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Cintura (cm)</label>
+                                <input type="number" id="cintura" class="form-input" step="0.1" value="86">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cadera (cm)</label>
+                                <input type="number" id="cadera" class="form-input" step="0.1" value="103">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cuello (cm)</label>
+                                <input type="number" id="cuello" class="form-input" step="0.1" value="39">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📏</div>
+                    <h2 class="card-title">Antropometría Detallada</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>Tren Superior</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Hombros (cm)</label>
+                                <input type="number" id="hombros" class="form-input" step="0.1" value="129">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Pecho (cm)</label>
+                                <input type="number" id="pecho" class="form-input" step="0.1" value="117">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Brazo relajado (cm)</label>
+                                <input type="number" id="brazo" class="form-input" step="0.1" value="38.5">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Antebrazo (cm)</label>
+                                <input type="number" id="antebrazo" class="form-input" step="0.1" value="29">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Tren Inferior</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Muslo (cm)</label>
+                                <input type="number" id="muslo" class="form-input" step="0.1" value="63">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Pantorrilla (cm)</label>
+                                <input type="number" id="pantorrilla" class="form-input" step="0.1" value="37">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Datos Adicionales</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nivel actividad</label>
+                                <select id="actividad" class="form-input">
+                                    <option value="sedentario">Sedentario</option>
+                                    <option value="ligera">Actividad ligera</option>
+                                    <option value="moderada" selected>Actividad moderada</option>
+                                    <option value="intensa">Actividad intensa</option>
+                                    <option value="extrema">Actividad extrema</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Porcentaje grasa estimado (%)</label>
+                                <input type="number" id="grasaEstimada" class="form-input" step="0.1" placeholder="Opcional">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-large btn-full" onclick="calcularAnalisisCompleto()">
+                        Realizar Análisis Completo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTRAS PESTAÑAS -->
+        <div id="analysis" class="tab-content">
+            <div id="analysisResults">
+                <div class="alert alert-info">
+                    Complete las mediciones para ver el análisis detallado.
+                </div>
+            </div>
+        </div>
+
+        <div id="proportions" class="tab-content">
+            <div id="proportionsResults">
+                <div class="alert alert-info">
+                    Complete el análisis para ver las proporciones antropométricas.
+                </div>
+            </div>
+        </div>
+
+        <div id="nutrition" class="tab-content">
+            <div id="nutritionResults">
+                <div class="alert alert-info">
+                    Complete el análisis para obtener el plan nutricional.
+                </div>
+            </div>
+        </div>
+
+        <div id="training" class="tab-content">
+            <div id="trainingResults">
+                <div class="alert alert-info">
+                    Complete el análisis para obtener el programa de entrenamiento.
+                </div>
+            </div>
+        </div>
+
+        <div id="progress" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📈</div>
+                    <h2 class="card-title">Seguimiento de Progreso</h2>
+                </div>
+                <div id="progressContent">
+                    <div class="alert alert-info">
+                        Realice múltiples evaluaciones para ver su progreso.
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="guardarEvaluacion()">Guardar Evaluación</button>
+            </div>
+        </div>
+
+        <div id="reports" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📋</div>
+                    <h2 class="card-title">Generación de Informes</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="analysis-item">
+                        <h4>Informe PDF Completo</h4>
+                        <p>Reporte profesional con análisis detallado.</p>
+                        <button class="btn btn-warning btn-full" onclick="generarInformeCompletoPDF()">
+                            Generar PDF
+                        </button>
+                    </div>
+                    <div class="analysis-item">
+                        <h4>Exportar Datos</h4>
+                        <p>Exporte datos en formato CSV.</p>
+                        <button class="btn btn-secondary btn-full" onclick="exportarDatosCSV()">
+                            Exportar CSV
+                        </button>
+                    </div>
+                </div>
+                <div id="reportPreview"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aquí va el JavaScript -->
+    <script src="script.js"></script>
+    <script src="ai-analysis.js"></script>
+</body>
+</html>
